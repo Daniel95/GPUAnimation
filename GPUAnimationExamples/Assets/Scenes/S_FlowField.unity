@@ -467,7 +467,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gridController: {fileID: 145894805}
   displayGrid: 1
-  curDisplayType: 3
+  curDisplayType: 1
 --- !u!1 &456687900
 GameObject:
   m_ObjectHideFlags: 0
@@ -1546,7 +1546,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gridController: {fileID: 145894805}
-  unitPrefab: {fileID: 6552410613355783834, guid: 0d6a75c5fa9fba445b75512b7a085aac,
+  unitPrefab: {fileID: 4958489753452315405, guid: daf5ce4ae153861489386ef4f56c72ed,
     type: 3}
   numUnitsPerSpawn: 50
   moveSpeed: 3
