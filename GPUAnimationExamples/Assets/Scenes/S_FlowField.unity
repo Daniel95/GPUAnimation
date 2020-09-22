@@ -465,9 +465,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5bb0d1ac5e3c27d4ba9e4c8e12094b06, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gridController: {fileID: 0}
-  displayGrid: 0
-  curDisplayType: 0
+  gridController: {fileID: 145894805}
+  displayGrid: 1
+  curDisplayType: 3
 --- !u!1 &456687900
 GameObject:
   m_ObjectHideFlags: 0
@@ -1546,9 +1546,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gridController: {fileID: 145894805}
-  unitPrefab: {fileID: 0}
-  numUnitsPerSpawn: 0
-  moveSpeed: 0
+  unitPrefab: {fileID: 6552410613355783834, guid: 0d6a75c5fa9fba445b75512b7a085aac,
+    type: 3}
+  numUnitsPerSpawn: 50
+  moveSpeed: 3
 --- !u!1 &1898248763
 GameObject:
   m_ObjectHideFlags: 0
