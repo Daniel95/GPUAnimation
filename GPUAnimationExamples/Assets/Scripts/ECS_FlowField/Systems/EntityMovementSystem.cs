@@ -12,13 +12,13 @@ namespace TMG.ECSFlowField
     {
         public static EntityMovementSystem instance;
         
-        private EntityQuery _flowFieldQuery;
-        private Entity _flowFieldEntity;
-        private FlowFieldData _flowFieldData;
-        private DestinationCellData _destinationCellData;
-        private DynamicBuffer<EntityBufferElement> _entityBuffer;
-        private DynamicBuffer<Entity> _gridEntities;
-        private static NativeArray<CellData> _cellDataContainer;
+        private EntityQuery flowFieldQuery;
+        private Entity flowFieldEntity;
+        private FlowFieldData flowFieldData;
+        private DestinationCellData destinationCellData;
+        private DynamicBuffer<EntityBufferElement> entityBuffer;
+        private DynamicBuffer<Entity> gridEntities;
+        private static NativeArray<CellData> cellDataContainer;
         
         protected override void OnCreate()
         {
@@ -27,22 +27,22 @@ namespace TMG.ECSFlowField
 
         public void SetMovementValues()
         {
-            _flowFieldQuery = GetEntityQuery(typeof(FlowFieldData));
-            _flowFieldEntity = _flowFieldQuery.GetSingletonEntity();
-            _flowFieldData = EntityManager.GetComponentData<FlowFieldData>(_flowFieldEntity);
-            _destinationCellData = EntityManager.GetComponentData<DestinationCellData>(_flowFieldEntity);
-            _entityBuffer = EntityManager.GetBuffer<EntityBufferElement>(_flowFieldEntity);
-            _gridEntities = _entityBuffer.Reinterpret<Entity>();
+            flowFieldQuery = GetEntityQuery(typeof(FlowFieldData));
+            flowFieldEntity = flowFieldQuery.GetSingletonEntity();
+            flowFieldData = EntityManager.GetComponentData<FlowFieldData>(flowFieldEntity);
+            destinationCellData = EntityManager.GetComponentData<DestinationCellData>(flowFieldEntity);
+            entityBuffer = EntityManager.GetBuffer<EntityBufferElement>(flowFieldEntity);
+            gridEntities = entityBuffer.Reinterpret<Entity>();
             
-            if (_cellDataContainer.IsCreated)
+            if (cellDataContainer.IsCreated)
             {
-                _cellDataContainer.Dispose();
+                cellDataContainer.Dispose();
             }
-            _cellDataContainer = new NativeArray<CellData>(_gridEntities.Length, Allocator.Persistent);
+            cellDataContainer = new NativeArray<CellData>(gridEntities.Length, Allocator.Persistent);
             
-            for (int i = 0; i < _entityBuffer.Length; i++)
+            for (int i = 0; i < entityBuffer.Length; i++)
             {
-                _cellDataContainer[i] = GetComponent<CellData>(_entityBuffer[i]);
+                cellDataContainer[i] = GetComponent<CellData>(entityBuffer[i]);
             }
             
             Entities.ForEach((ref EntityMovementData entityMovementData) =>
@@ -53,41 +53,66 @@ namespace TMG.ECSFlowField
 
         protected override void OnUpdate()
         {
-            if (_flowFieldEntity.Equals(Entity.Null)) { return; }
+            if (flowFieldEntity.Equals(Entity.Null)) { return; }
 
             float deltaTime = Time.DeltaTime;
-            FlowFieldData flowFieldData = _flowFieldData;
-            int2 destinationCell = _destinationCellData.destinationIndex;
-            JobHandle jobHandle = new JobHandle();
-            jobHandle = Entities.ForEach((ref PhysicsVelocity physVelocity, ref EntityMovementData entityMovementData, 
+            FlowFieldData _flowFieldData = flowFieldData;
+            int2 destinationCell = destinationCellData.destinationIndex;
+
+            NativeArray<CellData> _cellDataContainer = cellDataContainer;
+
+            Entities.ForEach((ref PhysicsVelocity physVelocity, ref EntityMovementData entityMovementData, 
                 ref Translation translation) =>
             {
-                int2 curCellIndex = FlowFieldHelper.GetCellIndexFromWorldPos(translation.Value, flowFieldData.gridSize,
-                    flowFieldData.cellRadius * 2);
-                
+                int2 curCellIndex = FlowFieldHelper.GetCellIndexFromWorldPos(translation.Value, _flowFieldData.gridSize,
+                    _flowFieldData.cellRadius * 2);
+
                 if (curCellIndex.Equals(destinationCell))
                 {
                     entityMovementData.destinationReached = true;
                 }
-                
-                int flatCurCellIndex = FlowFieldHelper.ToFlatIndex(curCellIndex, flowFieldData.gridSize.y);
+
+                int flatCurCellIndex = FlowFieldHelper.ToFlatIndex(curCellIndex, _flowFieldData.gridSize.y);
                 float2 moveDirection = _cellDataContainer[flatCurCellIndex].bestDirection;
                 float finalMoveSpeed = (entityMovementData.destinationReached ? entityMovementData.destinationMoveSpeed : entityMovementData.moveSpeed) * deltaTime;
-                
+
                 physVelocity.Linear.xz = moveDirection * finalMoveSpeed;
                 translation.Value.y = 0f;
 
-            }).ScheduleParallel(jobHandle);
+            }).Run();
 
-            //TODO: Do we need to complete??
-            jobHandle.Complete();
+
+            // JobHandle jobHandle = new JobHandle();
+
+            // jobHandle = Entities.ForEach((ref PhysicsVelocity physVelocity, ref EntityMovementData entityMovementData, 
+            //     ref Translation translation) =>
+            // {
+            //     int2 curCellIndex = FlowFieldHelper.GetCellIndexFromWorldPos(translation.Value, flowFieldData.gridSize,
+            //         flowFieldData.cellRadius * 2);
+
+            //     if (curCellIndex.Equals(destinationCell))
+            //     {
+            //         entityMovementData.destinationReached = true;
+            //     }
+
+            //     int flatCurCellIndex = FlowFieldHelper.ToFlatIndex(curCellIndex, flowFieldData.gridSize.y);
+            //     float2 moveDirection = _cellDataContainer[flatCurCellIndex].bestDirection;
+            //     float finalMoveSpeed = (entityMovementData.destinationReached ? entityMovementData.destinationMoveSpeed : entityMovementData.moveSpeed) * deltaTime;
+
+            //     physVelocity.Linear.xz = moveDirection * finalMoveSpeed;
+            //     translation.Value.y = 0f;
+
+            // }).ScheduleParallel(jobHandle);
+
+            // //TODO: Do we need to complete??
+            //jobHandle.Complete();
         }
-        
+
         protected override void OnDestroy()
         {
-            if (_cellDataContainer.IsCreated)
+            if (cellDataContainer.IsCreated)
             {
-                _cellDataContainer.Dispose();
+                cellDataContainer.Dispose();
             }
         }
     }

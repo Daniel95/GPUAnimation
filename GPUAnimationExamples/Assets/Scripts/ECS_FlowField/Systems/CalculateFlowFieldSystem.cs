@@ -100,10 +100,9 @@ namespace TMG.ECSFlowField
 					ushort bestCost = curCullData.bestCost;
 					int2 bestDirection = int2.zero;
 
-
                     for (int n = 0; n < neighborIndices.Length; n++)
                     {
-                        int2 neighborIndex = neighborIndices[i];
+                        int2 neighborIndex = neighborIndices[n];
 
                         int flatNeighborIndex = FlowFieldHelper.ToFlatIndex(neighborIndex, gridSize.y);
                         CellData neighborCellData = cellDataContainer[flatNeighborIndex];
