@@ -38,7 +38,7 @@ public class SpawnSystem : SystemBase
             {
                 if (spawned < spawnAmount)
                 {
-                    Entities.ForEach((SpawnSystemPrefabComponent spawnSystemPrefabComponent) =>
+                    Entities.ForEach((in SpawnSystemPrefabComponent spawnSystemPrefabComponent) =>
                     {
                         Entity spawnedEntity = EntityManager.Instantiate(spawnSystemPrefabComponent.prefabEntity);
 

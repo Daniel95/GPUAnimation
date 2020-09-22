@@ -68,7 +68,7 @@ SkinnedMeshRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4958489753452315401}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -173,9 +173,10 @@ GameObject:
   - component: {fileID: 1537958394037090468}
   - component: {fileID: 1537958394037090469}
   - component: {fileID: 1537958394037090523}
-  - component: {fileID: 4469347318346796179}
-  - component: {fileID: -235891630526170030}
   - component: {fileID: 5434612331446838084}
+  - component: {fileID: -3144501095302167257}
+  - component: {fileID: 7154935534071068522}
+  - component: {fileID: -6240480785417922654}
   m_Layer: 0
   m_Name: Skeleton
   m_TagString: Untagged
@@ -246,7 +247,37 @@ MonoBehaviour:
   RandomzeMinMaxSpeed:
     x: 1
     y: 1
---- !u!114 &4469347318346796179
+--- !u!114 &5434612331446838084
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4958489753452315405}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 77f34359f4e84424aae97146239dcac9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  moveSpeed: 150
+  destinationMoveSpeed: 15
+  destinationReached: 0
+--- !u!114 &-3144501095302167257
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4958489753452315405}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e374bc3ca78c615419103677581025fb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  LockX: 1
+  LockY: 0
+  LockZ: 1
+--- !u!114 &7154935534071068522
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -295,7 +326,7 @@ MonoBehaviour:
     Tag05: 0
     Tag06: 0
     Tag07: 0
---- !u!114 &-235891630526170030
+--- !u!114 &-6240480785417922654
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -313,9 +344,9 @@ MonoBehaviour:
     y: 0.56008345
     z: -0.0072762817
   m_PrimitiveSize:
-    x: 0.69468164
+    x: 0.9336296
     y: 1.1170356
-    z: 0.30469072
+    z: 0.75489837
   m_PrimitiveOrientation:
     Value:
       x: -0
@@ -324,11 +355,11 @@ MonoBehaviour:
     RotationOrder: 4
   m_Capsule:
     Height: 1.1170356
-    Radius: 0.34734082
+    Radius: 0.4668148
     Axis: 1
   m_Cylinder:
     Height: 1.1170356
-    Radius: 0.34734082
+    Radius: 0.4668148
     Axis: 1
   m_CylinderSideCount: 20
   m_SphereRadius: 0.5585178
@@ -454,21 +485,6 @@ MonoBehaviour:
       m_Value: 0
   m_SerializedVersion: 1
   m_ConvexRadius_Deprecated: -1
---- !u!114 &5434612331446838084
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4958489753452315405}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 77f34359f4e84424aae97146239dcac9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  moveSpeed: 150
-  destinationMoveSpeed: 15
-  destinationReached: 0
 --- !u!1 &4958489753452315407
 GameObject:
   m_ObjectHideFlags: 0
