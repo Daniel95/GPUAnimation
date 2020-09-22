@@ -29,7 +29,7 @@ public class SpawnerSystem_FromEntity : JobComponentSystem
 
     struct SpawnJob : IJobForEachWithEntity<Spawner_FromEntity, LocalToWorld>
     {
-        public EntityCommandBuffer.Concurrent CommandBuffer;
+        public EntityCommandBuffer.ParallelWriter CommandBuffer;
 
         public void Execute(Entity entity, int index, [ReadOnly] ref Spawner_FromEntity spawnerFromEntity,
             [ReadOnly] ref LocalToWorld location)
@@ -59,7 +59,7 @@ public class SpawnerSystem_FromEntity : JobComponentSystem
         // Schedule the job that will add Instantiate commands to the EntityCommandBuffer.
         var job = new SpawnJob
         {
-            CommandBuffer = m_EntityCommandBufferSystem.CreateCommandBuffer().ToConcurrent()
+            CommandBuffer = m_EntityCommandBufferSystem.CreateCommandBuffer().AsParallelWriter()
         }.Schedule(this, inputDeps);
 
 
