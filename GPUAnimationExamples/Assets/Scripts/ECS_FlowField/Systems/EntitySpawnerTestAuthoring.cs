@@ -6,7 +6,6 @@ using Random = UnityEngine.Random;
 
 public class EntitySpawnerTestAuthoring : MonoBehaviour
 {
-    [SerializeField] private GameObject unitPrefab;
     [SerializeField] private int numUnitsPerSpawn;
     [SerializeField] private float2 maxSpawnPos;
 
@@ -14,7 +13,6 @@ public class EntitySpawnerTestAuthoring : MonoBehaviour
     {
         EntitySpawnerTest spawnSystem = World.DefaultGameObjectInjectionWorld.GetExistingSystem<EntitySpawnerTest>();
 
-        spawnSystem.unitPrefab = unitPrefab;
         spawnSystem.numUnitsPerSpawn = numUnitsPerSpawn;
         spawnSystem.maxSpawnPos = maxSpawnPos;
     }
