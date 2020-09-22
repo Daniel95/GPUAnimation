@@ -1,18 +1,14 @@
-﻿using System.Collections.Generic;
-using UnityEngine;
-using Unity.Entities;
-using Unity.Transforms;
+﻿using Unity.Entities;
 using Unity.Mathematics;
+using Unity.Transforms;
+using UnityEngine;
 using Random = UnityEngine.Random;
-using TMG.ECSFlowField;
 
 public class EntitySpawnerTestAuthoring : MonoBehaviour
 {
     [SerializeField] private GameObject unitPrefab;
     [SerializeField] private int numUnitsPerSpawn;
     [SerializeField] private float2 maxSpawnPos;
-    //[SerializeField] private float moveSpeed;
-    //[SerializeField] private float destinationMoveSpeed;
 
     private void Awake()
     {
@@ -21,8 +17,6 @@ public class EntitySpawnerTestAuthoring : MonoBehaviour
         spawnSystem.unitPrefab = unitPrefab;
         spawnSystem.numUnitsPerSpawn = numUnitsPerSpawn;
         spawnSystem.maxSpawnPos = maxSpawnPos;
-        //spawnSystem.moveSpeed = moveSpeed;
-        //spawnSystem.destinationMoveSpeed = destinationMoveSpeed;
     }
 }
 
@@ -31,8 +25,6 @@ public class EntitySpawnerTest : SystemBase
     public GameObject unitPrefab;
     public int numUnitsPerSpawn;
     public float2 maxSpawnPos;
-    //public float moveSpeed;
-    //public float destinationMoveSpeed;
 
     //private List<Entity> unitsInGame;
     private int colMask;
@@ -42,16 +34,8 @@ public class EntitySpawnerTest : SystemBase
         if (Input.GetKeyDown(KeyCode.Alpha1))
         {
             //EntityMovementData newEntityMovementData = new EntityMovementData
-            //{
-            //    moveSpeed = moveSpeed,
-            //    destinationReached = false,
-            //    destinationMoveSpeed = destinationMoveSpeed
-            //};
-
             for (int i = 0; i < numUnitsPerSpawn; i++)
             {
-                Debug.Log("spawn");
-
                 Entities.ForEach((in SpawnSystemPrefabComponent spawnSystemPrefabComponent) =>
                 {
                     var newUnit = EntityManager.Instantiate(spawnSystemPrefabComponent.prefabEntity);
