@@ -14,8 +14,9 @@ namespace TMG.ECSFlowField
         protected override void OnUpdate()
         {
             var commandBuffer = _ecbSystem.CreateCommandBuffer();
-            
-            Entities.ForEach((Entity entity, in CompleteFlowFieldTag completeFlowFieldTag, in FlowFieldData flowFieldData) =>
+
+            //TODO: queue SetMovementValues actions
+            Entities.WithoutBurst().ForEach((Entity entity, in CompleteFlowFieldTag completeFlowFieldTag, in FlowFieldData flowFieldData) =>
             {
                 commandBuffer.RemoveComponent<CompleteFlowFieldTag>(entity);
                 EntityMovementSystem.instance.SetMovementValues();

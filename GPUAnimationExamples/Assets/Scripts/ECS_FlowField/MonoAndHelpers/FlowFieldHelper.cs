@@ -4,7 +4,7 @@ using Unity.Mathematics;
 
 namespace TMG.ECSFlowField
 {
-    public static class FlowFieldHelper
+    public struct FlowFieldHelper
     {
         public static void GetNeighborIndices(int2 originIndex, IEnumerable<GridDirection> directions, int2 gridSize, ref NativeList<int2> results)
         {

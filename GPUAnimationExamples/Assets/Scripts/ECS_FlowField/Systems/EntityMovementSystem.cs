@@ -53,7 +53,8 @@ namespace TMG.ECSFlowField
 
         protected override void OnUpdate()
         {
-            if (_flowFieldEntity.Equals(Entity.Null)) {return;}
+            if (_flowFieldEntity.Equals(Entity.Null)) { return; }
+
             float deltaTime = Time.DeltaTime;
             FlowFieldData flowFieldData = _flowFieldData;
             int2 destinationCell = _destinationCellData.destinationIndex;
@@ -77,12 +78,17 @@ namespace TMG.ECSFlowField
                 translation.Value.y = 0f;
 
             }).ScheduleParallel(jobHandle);
+
+            //TODO: Do we need to complete??
             jobHandle.Complete();
         }
         
         protected override void OnDestroy()
         {
-            _cellDataContainer.Dispose();
+            if (_cellDataContainer.IsCreated)
+            {
+                _cellDataContainer.Dispose();
+            }
         }
     }
 }

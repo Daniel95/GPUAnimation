@@ -5,20 +5,22 @@ namespace TMG.ECSFlowField
 {
 	public class InitializeFlowFieldGridSystem : SystemBase
 	{
-		private EntityCommandBufferSystem _ecbSystem;
-		private static EntityArchetype _cellArchetype;
+		private EntityCommandBufferSystem ecbSystem;
+		private static EntityArchetype cellArchetype;
 		
 		protected override void OnCreate()
 		{
-			_ecbSystem = World.GetOrCreateSystem<EntityCommandBufferSystem>();
-			_cellArchetype = EntityManager.CreateArchetype(typeof(CellData));
+			ecbSystem = World.GetOrCreateSystem<EntityCommandBufferSystem>();
+			cellArchetype = EntityManager.CreateArchetype(typeof(CellData));
 		}
 
 		protected override void OnUpdate()
 		{
-			EntityCommandBuffer commandBuffer = _ecbSystem.CreateCommandBuffer();
+			EntityArchetype _entityArchetype = cellArchetype;
+			EntityCommandBuffer commandBuffer = ecbSystem.CreateCommandBuffer();
 
-			Entities.ForEach((Entity entity, in NewFlowFieldData newFlowFieldData, in FlowFieldData flowFieldData) =>
+			//TODO: find a way to access CostFieldHelper outside of this function so we can use burst.
+			Entities.WithoutBurst().ForEach((Entity entity, in NewFlowFieldData newFlowFieldData, in FlowFieldData flowFieldData) =>
 			{
 				commandBuffer.RemoveComponent<NewFlowFieldData>(entity);
 
@@ -27,8 +29,6 @@ namespace TMG.ECSFlowField
 					: commandBuffer.AddBuffer<EntityBufferElement>(entity);
 				DynamicBuffer<Entity> entityBuffer = buffer.Reinterpret<Entity>();
 
-				
-				
 				float cellRadius = flowFieldData.cellRadius;
 				float cellDiameter = cellRadius * 2;
 
@@ -57,7 +57,7 @@ namespace TMG.ECSFlowField
 						}
 						else
 						{
-							curCell = commandBuffer.CreateEntity(_cellArchetype);
+							curCell = commandBuffer.CreateEntity(_entityArchetype);
 							entityBuffer.Add(curCell);
 						}
 						commandBuffer.SetComponent(curCell, newCellData);
@@ -74,5 +74,27 @@ namespace TMG.ECSFlowField
 				commandBuffer.AddComponent<CalculateFlowFieldTag>(entity);
 			}).Run();
 		}
-	}
+
+        //public static int ToFlatIndex(int2 index2D, int height)
+        //{
+        //    return height * index2D.x + index2D.y;
+        //}
+
+        //public static int2 GetCellIndexFromWorldPos(float3 worldPos, int2 gridSize, float cellDiameter)
+        //{
+        //    float percentX = worldPos.x / (gridSize.x * cellDiameter);
+        //    float percentY = worldPos.z / (gridSize.y * cellDiameter);
+
+        //    percentX = math.clamp(percentX, 0f, 1f);
+        //    percentY = math.clamp(percentY, 0f, 1f);
+
+        //    int2 cellIndex = new int2
+        //    {
+        //        x = math.clamp((int)math.floor((gridSize.x) * percentX), 0, gridSize.x - 1),
+        //        y = math.clamp((int)math.floor((gridSize.y) * percentY), 0, gridSize.y - 1)
+        //    };
+
+        //    return cellIndex;
+        //}
+    }
 }

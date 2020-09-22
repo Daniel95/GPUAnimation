@@ -15,7 +15,8 @@ namespace TMG.ECSFlowField
 		{
 			EntityCommandBuffer commandBuffer = _ecbSystem.CreateCommandBuffer();
 
-			Entities.ForEach((Entity entity, in CellData cellData, in AddToDebugTag addToDebugTag) =>
+			//TODO: queue AddToList actions
+			Entities.WithoutBurst().ForEach((Entity entity, in CellData cellData, in AddToDebugTag addToDebugTag) =>
 			{
 				GridDebug.instance.AddToList(cellData);
 				commandBuffer.RemoveComponent<AddToDebugTag>(entity);

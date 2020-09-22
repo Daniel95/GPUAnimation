@@ -17,7 +17,8 @@ namespace TMG.ECSFlowField
 		{
 			var commandBuffer = _ecbSystem.CreateCommandBuffer();
 
-			Entities.ForEach((Entity entity, ref DynamicBuffer<EntityBufferElement> buffer, 
+			//TODO: turn FlowFieldHelper.GetNeighborIndices into an unmanaged function so we can enable burst.
+			Entities.WithoutBurst().ForEach((Entity entity, ref DynamicBuffer<EntityBufferElement> buffer, 
 				in CalculateFlowFieldTag calculateFlowFieldTag, in DestinationCellData destinationCellData, 
 				in FlowFieldData flowFieldData) =>
 			{
@@ -52,23 +53,43 @@ namespace TMG.ECSFlowField
 					CellData curCellData = cellDataContainer[cellFlatIndex];
 					neighborIndices.Clear();
 					FlowFieldHelper.GetNeighborIndices(cellIndex, GridDirection.CardinalDirections, gridSize, ref neighborIndices);
-					foreach (int2 neighborIndex in neighborIndices)
-					{
-						int flatNeighborIndex = FlowFieldHelper.ToFlatIndex(neighborIndex, gridSize.y);
-						CellData neighborCellData = cellDataContainer[flatNeighborIndex];
-						if (neighborCellData.cost == byte.MaxValue)
-						{
-							continue;
-						}
 
-						if (neighborCellData.cost + curCellData.bestCost < neighborCellData.bestCost)
-						{
-							neighborCellData.bestCost = (ushort) (neighborCellData.cost + curCellData.bestCost);
-							cellDataContainer[flatNeighborIndex] = neighborCellData;
-							indicesToCheck.Enqueue(neighborIndex);
-						}
-					}
-				}
+                    for (int n = 0; n < neighborIndices.Length; n++)
+                    {
+						int2 neighborIndex = neighborIndices[n];
+
+						int flatNeighborIndex = FlowFieldHelper.ToFlatIndex(neighborIndex, gridSize.y);
+                        CellData neighborCellData = cellDataContainer[flatNeighborIndex];
+                        if (neighborCellData.cost == byte.MaxValue)
+                        {
+                        	continue;
+                        }
+
+                        if (neighborCellData.cost + curCellData.bestCost < neighborCellData.bestCost)
+                        {
+                        	neighborCellData.bestCost = (ushort) (neighborCellData.cost + curCellData.bestCost);
+                        	cellDataContainer[flatNeighborIndex] = neighborCellData;
+                        	indicesToCheck.Enqueue(neighborIndex);
+                        }
+                    }
+
+                    //foreach (int2 neighborIndex in neighborIndices)
+                    //{
+                    //	int flatNeighborIndex = FlowFieldHelper.ToFlatIndex(neighborIndex, gridSize.y);
+                    //	CellData neighborCellData = cellDataContainer[flatNeighborIndex];
+                    //	if (neighborCellData.cost == byte.MaxValue)
+                    //	{
+                    //		continue;
+                    //	}
+
+                    //	if (neighborCellData.cost + curCellData.bestCost < neighborCellData.bestCost)
+                    //	{
+                    //		neighborCellData.bestCost = (ushort) (neighborCellData.cost + curCellData.bestCost);
+                    //		cellDataContainer[flatNeighborIndex] = neighborCellData;
+                    //		indicesToCheck.Enqueue(neighborIndex);
+                    //	}
+                    //}
+                }
 
 				// Flow Field
 				for (int i = 0; i < cellDataContainer.Length; i++)
@@ -78,17 +99,34 @@ namespace TMG.ECSFlowField
 					FlowFieldHelper.GetNeighborIndices(curCullData.gridIndex, GridDirection.AllDirections, gridSize, ref neighborIndices);
 					ushort bestCost = curCullData.bestCost;
 					int2 bestDirection = int2.zero;
-					foreach (int2 neighborIndex in neighborIndices)
-					{
-						int flatNeighborIndex = FlowFieldHelper.ToFlatIndex(neighborIndex, gridSize.y);
-						CellData neighborCellData = cellDataContainer[flatNeighborIndex];
-						if (neighborCellData.bestCost < bestCost)
-						{
-							bestCost = neighborCellData.bestCost;
-							bestDirection = neighborCellData.gridIndex - curCullData.gridIndex;
-						}
-					}
-					curCullData.bestDirection = bestDirection;
+
+
+                    for (int n = 0; n < neighborIndices.Length; n++)
+                    {
+                        int2 neighborIndex = neighborIndices[i];
+
+                        int flatNeighborIndex = FlowFieldHelper.ToFlatIndex(neighborIndex, gridSize.y);
+                        CellData neighborCellData = cellDataContainer[flatNeighborIndex];
+                        if (neighborCellData.bestCost < bestCost)
+                        {
+                        	bestCost = neighborCellData.bestCost;
+                        	bestDirection = neighborCellData.gridIndex - curCullData.gridIndex;
+                        }
+                    }
+
+                    //foreach (int2 neighborIndex in neighborIndices)
+                    //{
+                    //	int flatNeighborIndex = FlowFieldHelper.ToFlatIndex(neighborIndex, gridSize.y);
+                    //	CellData neighborCellData = cellDataContainer[flatNeighborIndex];
+                    //	if (neighborCellData.bestCost < bestCost)
+                    //	{
+                    //		bestCost = neighborCellData.bestCost;
+                    //		bestDirection = neighborCellData.gridIndex - curCullData.gridIndex;
+                    //	}
+                    //}
+
+
+                    curCullData.bestDirection = bestDirection;
 					cellDataContainer[i] = curCullData;
 				}
 
