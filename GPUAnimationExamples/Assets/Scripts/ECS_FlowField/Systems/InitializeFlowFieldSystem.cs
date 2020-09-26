@@ -9,7 +9,11 @@ namespace TMG.ECSFlowField
 		private EntityQuery _flowFieldControllerQuery;
 		private Entity _flowFieldControllerEntity;
 		private Camera _mainCamera;
-		protected override void OnCreate()
+
+		private float interval = 1f;
+        private float timer = 0;
+
+        protected override void OnCreate()
 		{
 			_flowFieldControllerQuery = GetEntityQuery(typeof(FlowFieldControllerData));
 		}
@@ -21,8 +25,14 @@ namespace TMG.ECSFlowField
 
 		protected override void OnUpdate()
 		{
-			if (Input.GetMouseButtonDown(0))
-			{
+            timer += Time.DeltaTime;
+			if(timer < interval) { return; }
+			timer = interval;
+
+			Debug.Log("calculate");
+
+			//if (Input.GetMouseButtonDown(0))
+			//{
 				Vector3 mousePos = new Vector3(Input.mousePosition.x, Input.mousePosition.y, 10);
 				Vector3 worldMousePos = _mainCamera.ScreenToWorldPoint(mousePos);
 				
@@ -50,7 +60,7 @@ namespace TMG.ECSFlowField
 				EntityManager.AddComponent<NewFlowFieldData>(_flowFieldEntity);
 				EntityManager.SetComponentData(_flowFieldEntity, flowFieldData);
 				EntityManager.SetComponentData(_flowFieldEntity, newFlowFieldData);
-			}
+			//}
 		}
 	}
 }

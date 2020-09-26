@@ -13,7 +13,6 @@ public class SwitchAnimation : SystemBase
             {
                 simpleAnim.ClipIndex = random.NextInt(0, 2);
             }).Run();
-
         }
     }
 }

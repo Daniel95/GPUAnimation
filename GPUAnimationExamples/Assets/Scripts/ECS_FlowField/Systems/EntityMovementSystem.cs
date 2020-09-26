@@ -76,6 +76,10 @@ namespace TMG.ECSFlowField
                 float2 moveDirection = _cellDataContainer[flatCurCellIndex].bestDirection;
                 float finalMoveSpeed = (entityMovementData.destinationReached ? entityMovementData.destinationMoveSpeed : entityMovementData.moveSpeed) * deltaTime;
 
+                float2 movement = moveDirection * finalMoveSpeed;
+
+                //translation.Value += new float3(movement.x, 0, movement.y);
+
                 physVelocity.Linear.xz = moveDirection * finalMoveSpeed;
                 translation.Value.y = 0f;
 

@@ -170,15 +170,19 @@ namespace TMG.FlowField
 
 					foreach (Cell curCell in curFlowField.grid)
 					{
-						Handles.Label(curCell.worldPos, curCell.cost.ToString(), style);
-					}
-					break;
+#if UNITY_EDITOR
+                        Handles.Label(curCell.worldPos, curCell.cost.ToString(), style);
+#endif
+                    }
+                    break;
 
 				case FlowFieldDisplayType.IntegrationField:
 
 					foreach (Cell curCell in curFlowField.grid)
 					{
-						Handles.Label(curCell.worldPos, curCell.bestCost.ToString(), style);
+#if UNITY_EDITOR
+                        Handles.Label(curCell.worldPos, curCell.bestCost.ToString(), style);
+#endif
 					}
 					break;
 
